@@ -25,12 +25,12 @@ var boardState= [
     [[0,0,0], [0,0,0], [0,0,0]]
 ];
 
-var gridId=[2,1];
+var gridId=[2,2];
 
 let amt;
 
 let col, prevcolor, newcolor;
-let prevaccposx=0, prevaccposz=0;
+let accposy=0, accposz=0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -72,6 +72,8 @@ function stopOscillator(){
   playing = false;
 }
 
+let checkaccel=0;
+
 function draw() {  
   newcolor=color(boardState[gridId[0]][gridId[1]][0],boardState[gridId[0]][gridId[1]][1],boardState[gridId[0]][gridId[1]][2]);
 if (newcolor.levels[0]!=col.levels[0]||newcolor.levels[1]!=col.levels[1]||newcolor.levels[2]!=col.levels[2]){
@@ -85,15 +87,17 @@ if (newcolor.levels[0]!=col.levels[0]||newcolor.levels[1]!=col.levels[1]||newcol
 
   //background(lerpColor(prevcolor, col, smoothstep(0.1,0.8,amt)));
   amt+=0.01;
+  checkaccel=checkaccel+1;
   background(0,0,255);
   noStroke();
   ambientLight(0, 0, 0);
   pointLight(lerpColor(prevcolor, col, smoothstep(0.1,0.7,amt)), 0, 0, 800);
-  if (prevaccposy-0.5>accelerationY || prevaccposy+0.5<accelerationY || prevaccposz-0.5>accelerationZ || prevaccposz+0.5<accelerationZ ){
-      prevaccposy=accelerationY;
-      prevaccposz=accelerationZ;
+  if (checkaccel>=25){
+      accposy=accelerationY;
+      accposz=accelerationZ;
+      checkaccel=0;
   }
-  pointLight(lerpColor(prevcolor, col, smoothstep(0.1,0.7,amt)), prevaccposx*200, prevaccposz*200, 800);
+  pointLight(lerpColor(prevcolor, col, smoothstep(0.1,0.7,amt)), accposy*200, accposz*200, 800);
   specularMaterial(250);
   shininess(5);
   sphere(700);
